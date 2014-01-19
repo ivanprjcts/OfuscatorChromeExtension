@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Hasher Plugin",
+  "description": "Hash the selected text with SHA1",
+  "version": "0.0",
+  "permissions": ["alarms", "tabs", "bookmarks", "runtime", "*://*/*"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+ "content_scripts": [{   
+     "matches": ["<all_urls>","http://*/*","https://*/*"],
+     "js": ["sha1.js"],
+     "run_at": "document_start"
+  }],
+  "browser_action": {
+    "default_icon" : "icon.png",
+    "default_title": "Hasher"
+  },
+  "commands": {
+    "open-google": {
+      "description": "Open a tab to google.com",
+      "suggested_key": { "default": "Ctrl+Shift+L" }
+    },
+    "_execute_browser_action": {
+      "suggested_key": { "default": "Ctrl+Shift+K" }
+    }
+  }
+}
