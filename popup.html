@@ -1,13 +1,50 @@
 <html>
 <head>
 
-<script src="popup.js"></script>
+<script type="text/javascript" src="tabber.js">
+</script>
+
+<script type="text/javascript" src="popup.js">
+</script>
+
+<link rel="stylesheet" href="screen.css" TYPE="text/css" MEDIA="screen">
+<link rel="stylesheet" href="boton.css" TYPE="text/css">
+<link rel="stylesheet" href="boton2.css" TYPE="text/css">
+<script type="text/javascript">
+
+/* Optional: Temporarily hide the "tabber" class so it does not "flash"
+   on the page as plain HTML. After tabber runs, the class is changed
+   to "tabberlive" and it will appear. */
+
+document.write('<style type="text/css">.tabber{display:none;}<\/style>');
+</script>
 
 <head/>
 <body>
 
-<button id="ofuscarButton">Ofuscar</button>
-<button id="desofuscarButton">Desofuscar</button>
+<div class="tabber">
 
+     <div class="tabbertab">
+	  <h2>         </h2>
+	      <button id="ofuscarButton">Ofuscar</button>
+<div class="onoffswitch"><input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked><label class="onoffswitch-label" for="myonoffswitch"><div class="onoffswitch-inner"></div> <div class="onoffswitch-switch"></div>  </label></div>
+	      <hr></hr>
+    	      <button id="desofuscarButton">Desofuscar</button>
+<div class="onoffswitch2"><input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox2" id="myonoffswitch2" checked><label class="onoffswitch-label2" for="myonoffswitch2"><div class="onoffswitch-inner2"></div> <div class="onoffswitch-switch2"></div>  </label></div>
+     </div>
+
+
+     <div class="tabbertab">
+	  <h2>Settings</h2>
+	  <select name="ALG">
+   		<option value="1">SHA1</option> 
+   		<option value="2">MD5</option> 
+   		<option value="3">RSA</option>
+	  </select>
+	 <input type="range" name="Time" min="1" max="20"><label for="Time">time</label>
+	 <input type="range" name="Size" min="1" max="1000"><label for="Size">size</label>
+     </div>
+
+</div>
 </body>
 </html>
