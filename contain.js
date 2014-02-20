@@ -94,10 +94,17 @@ function ofuscateSelTextArea(){
 	var allTextArea = document.getElementsByTagName("textarea");
 	var num = allTextArea.length;
 	var desofus_msg;
+	var selection;
 	var i;
 	for(i = 0 ; i < num ; i++){
-		ofus_msg = new Ofuscated_msg(allTextArea[i].value.toString(), Ofuscated_msg.SHA1); 
-		allTextArea[i].value = ofus_msg.toString();
+		if(allTextArea[i].selectionStart != allTextArea[i].selectionEnd){
+			 
+			selection = allTextArea[i].value.substring(allTextArea[i].selectionStart, allTextArea[i].selectionEnd);
+			ofus_msg = new Ofuscated_msg(selection, Ofuscated_msg.SHA1);
+			allTextArea[i].value = allTextArea[i].value.substring(0, allTextArea[i].selectionStart) + 
+												ofus_msg +
+					       allTextArea[i].value.substring(allTextArea[i].selectionEnd, allTextArea[i].value.toString().length);
+		}
 	}
 }
 
@@ -152,10 +159,14 @@ function ofuscateSelInput(){
 	var desofus_msg;
 	var i;
 	for(i = 0 ; i < num ; i++){
-		if((allInput[i].type.toString() !== 'submit') && (allInput[i].type.toString() !== 'hidden')){
-			ofus_msg = new Ofuscated_msg(allInput[i].value.toString(), Ofuscated_msg.SHA1); 
-			allInput[i].value = ofus_msg.toString();
+		if(allInput[i].type === "text" && allInput[i].selectionStart != allInput[i].selectionEnd){
+			selection = allInput[i].value.substring(allInput[i].selectionStart, allInput[i].selectionEnd);
+			ofus_msg = new Ofuscated_msg(selection, Ofuscated_msg.SHA1);
+			allInput[i].value = allInput[i].value.substring(0, allInput[i].selectionStart) + 
+			         							      ofus_msg +
+			      allInput[i].value.substring(allInput[i].selectionEnd, allInput[i].value.toString().length);
 		}
+		
 	}
 }
 
@@ -268,13 +279,14 @@ function ofuscarAll(){
 }
 
 function ofuscarSel(){
-
+/*
 	var text = window.getSelection().toString();
 	ofus_msg = new Ofuscated_msg(text, Ofuscated_msg.SHA1); 
 	replaceSelectedText(ofus_msg.toString());
+*/
 	ofuscateSelTextArea();
 	ofuscateSelInput();
-	ofuscateSelOutlook();
+	//ofuscateSelOutlook();
 }
 
 function desofuscarAll(){

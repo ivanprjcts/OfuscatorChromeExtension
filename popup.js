@@ -1,13 +1,25 @@
 function click(e) {
-  if(e.target.id === 'ofuscarButton'){
-    chrome.tabs.executeScript(null,
-      {code:"ofuscarAll();"});
-  }
-  if(e.target.id === 'desofuscarButton'){
-    chrome.tabs.executeScript(null,
-      {code:"desofuscarAll();"});
-  }
-  window.close();
+
+	if(e.target.id === 'ofuscarButton'){
+
+		if(myonoffswitch.checked){
+			chrome.tabs.executeScript(null, {code:"ofuscarSel();"});
+		}else{
+			chrome.tabs.executeScript(null,{code:"ofuscarAll();"});
+		}
+
+	}
+	if(e.target.id === 'desofuscarButton'){
+		chrome.tabs.executeScript(null, {code:"desofuscarAll();"});
+/*
+		if(myonoffswitch2.checked){
+			chrome.tabs.executeScript(null, {code:"desofuscarSel();"});
+		else{
+			chrome.tabs.executeScript(null, {code:"desofuscarAll();"});
+		}
+*/
+	}
+	window.close();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
