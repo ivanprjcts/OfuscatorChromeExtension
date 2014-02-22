@@ -31,7 +31,7 @@ function Ofuscated_msg(msg, alg){
 	this.algorith = alg;
 
 	this.toString = function toString(){
-		return Ofuscated_msg.init + value + "\n" + Ofuscated_msg.end;
+		return Ofuscated_msg.init + "\n" + value + "\n" + Ofuscated_msg.end;
 	}
 
 	this.desofuscar = function desofuscar(){
@@ -39,28 +39,21 @@ function Ofuscated_msg(msg, alg){
 	}
 }
 
-Ofuscated_msg.init = "----------Ofuscated_msg: SHA1----------\n";
+Ofuscated_msg.init = "----------Ofuscated_msg: SHA1----------";
 Ofuscated_msg.end = "----------end----------";
 
 
-/*
-function isOfuscated(msg){
-	return msg.startsWith(Ofuscated_msg.init) && msg.endsWith(Ofuscated_msg.end);
-}
-*/
 function isOfuscated(msg){
 	return msg.startsWith(Ofuscated_msg.init.substring(0,Ofuscated_msg.init.length-2)) && msg.endsWith(Ofuscated_msg.end);
 }
 
-/*
+
 function desofuscar(ofs_msg){
-        //alert(ofs_msg.length - Ofuscated_msg.end.length);
-	return ofs_msg.substring(Ofuscated_msg.init.length, ofs_msg.length - Ofuscated_msg.end.length);
-}
-*/
-function desofuscar(ofs_msg){
-        //alert(ofs_msg.length - Ofuscated_msg.end.length);
-	return ofs_msg.substring(Ofuscated_msg.init.length-1, ofs_msg.length - Ofuscated_msg.end.length);
+	var ret = ofs_msg.substring(Ofuscated_msg.init.length, ofs_msg.length - Ofuscated_msg.end.length);
+	if(ret.charAt(0) === '\n'){
+		ret = ret.substring(1, ret.length);
+	}
+	return ret;
 }
 
 function replaceSelectedText(replacementText) {    
@@ -131,10 +124,14 @@ function desofuscateSelTextArea(){
 	var t;
 	var i;
 	for(i = 0 ; i < num ; i++){
-		t = allTextArea[i].value.toString();
-		if(isOfuscated(t)){
-			desofus_msg = desofuscar(t);  
-			allTextArea[i].value = desofus_msg;
+		if(allTextArea[i].selectionStart != allTextArea[i].selectionEnd){
+			selection = allTextArea[i].value.substring(allTextArea[i].selectionStart, allTextArea[i].selectionEnd);
+			if(isOfuscated(selection)){
+				desofus_msg = desofuscar(selection);  
+				allTextArea[i].value = allTextArea[i].value.substring(0, allTextArea[i].selectionStart) + 
+												            desofus_msg +
+					       allTextArea[i].value.substring(allTextArea[i].selectionEnd, allTextArea[i].value.toString().length);
+			}
 		}
 		
 	}
@@ -146,7 +143,7 @@ function ofuscateAllInput(){
 	var desofus_msg;
 	var i;
 	for(i = 0 ; i < num ; i++){
-		if((allInput[i].type.toString() !== 'submit') && (allInput[i].type.toString() !== 'hidden')){
+		if(allInput[i].type.toString() === 'text') {
 			ofus_msg = new Ofuscated_msg(allInput[i].value.toString(), Ofuscated_msg.SHA1); 
 			allInput[i].value = ofus_msg.toString();
 		}
@@ -178,7 +175,7 @@ function desofuscateAllInput(){
 	var t;
 	var i;
 	for(i = 0 ; i < num ; i++){
-		if((allInput[i].type.toString() !== 'submit') && (allInput[i].type.toString() !== 'hidden')){
+		if(allInput[i].type.toString() === 'text') {
 			t = allInput[i].value.toString();
 			if(isOfuscated(t)){ 
 				desofus_msg = desofuscar(t);  
@@ -196,11 +193,13 @@ function desofuscateSelInput(){
 	var t;
 	var i;
 	for(i = 0 ; i < num ; i++){
-		if((allInput[i].type.toString() !== 'submit') && (allInput[i].type.toString() !== 'hidden')){
-			t = allInput[i].value.toString();
-			if(isOfuscated(t)){ 
-				desofus_msg = desofuscar(t);  
-				allInput[i].value = desofus_msg;
+		if(allInput[i].type.toString() === 'text' && allInput[i].selectionStart != allInput[i].selectionEnd) {
+			selection = allInput[i].value.substring(allInput[i].selectionStart, allInput[i].selectionEnd);
+			if(isOfuscated(selection)){ 
+				desofus_msg = desofuscar(selection);  
+				allInput[i].value = allInput[i].value.substring(0, allInput[i].selectionStart) + 
+			         							           desofus_msg +
+			      allInput[i].value.substring(allInput[i].selectionEnd, allInput[i].value.toString().length);
 			}
 		}
 	}
@@ -269,10 +268,11 @@ function desofuscateSelOutlook(){
 }
 
 function ofuscarAll(){
-
+/*
 	var text = window.getSelection().toString();
 	ofus_msg = new Ofuscated_msg(text, Ofuscated_msg.SHA1); 
 	replaceSelectedText(ofus_msg.toString());
+*/
 	ofuscateAllTextArea();
 	ofuscateAllInput();
 	ofuscateAllOutlook();
@@ -300,5 +300,5 @@ function desofuscarSel(){
 	
 	desofuscateSelInput();
 	desofuscateSelTextArea();
-	desofuscateSelOutlook();
+	//desofuscateSelOutlook();
 }

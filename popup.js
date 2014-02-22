@@ -10,14 +10,13 @@ function click(e) {
 
 	}
 	if(e.target.id === 'desofuscarButton'){
-		chrome.tabs.executeScript(null, {code:"desofuscarAll();"});
-/*
+
 		if(myonoffswitch2.checked){
 			chrome.tabs.executeScript(null, {code:"desofuscarSel();"});
-		else{
+		}else{
 			chrome.tabs.executeScript(null, {code:"desofuscarAll();"});
 		}
-*/
+
 	}
 	window.close();
 }
