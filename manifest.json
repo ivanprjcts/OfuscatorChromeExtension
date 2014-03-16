@@ -1,13 +1,18 @@
 {
   "manifest_version": 2,
-  "name": "Ofuscator Plugin",
-  "description": "Hash the selected text with SHA1",
+  "name": "Obfuscator Plugin",
+  "description": "Obfuscate your messages",
+  "icons": {
+      "16":"obfuscator_icon16.jpg",
+      "48":"obfuscator_icon48.jpg",
+      "128":"obfuscator_icon128.jpg"
+  },
   "version": "0.0",
   "permissions": ["alarms", "tabs", "bookmarks", "*://*/*"],
   
  "content_scripts": [{   
      "matches": ["<all_urls>","http://*/*","https://*/*"],
-     "js": ["sha1.js","contain.js"],
+     "js": ["sha1.js","string-ext.js","obfuscator.js","alg.js"],
      "run_at": "document_start"
   }],
   "browser_action": {
