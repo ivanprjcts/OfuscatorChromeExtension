@@ -1,5 +1,5 @@
-var API_INIT = "----------Obfuscated_msg: Prueba ----------";
-var API_END = "----------end----------";
+var API_INIT = "-----BEGIN OBS MESSAGE-----";
+var API_END = "-----END OBS MESSAGE-----";
 
 function Obfuscator(size, time, obfuscate_alg, deobfuscate_alg){
     this.size = size;
