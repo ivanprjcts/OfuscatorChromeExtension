@@ -3,80 +3,91 @@ var API_END = "-----END OBS MESSAGE-----";
 
 var API_ALG = "Algorithm: ";
 
-function Obfuscator(obs_algorithm){
-    
-    var mask ;
-    
-    var algorithm = obs_algorithm;
-    
-    this.setMask = function(mask_){
-        mask = mask_;
-    };
-    
-    
-    function obfuscate(text){
-        if(algorithm.name === "Masked-AES"){
-            return API_INIT + API_ALG + algorithm.name + " " + algorithm.obfuscateAlgorithm(text, mask) + API_END;
+function Deobfuscator(){
+        
+    function deobfuscate(text){
+        var msg = new String(text);
+        var i = msg.indexOf(API_INIT, 0);
+        var j = msg.indexOf(API_ALG, 0);
+        var k = msg.indexOf(" ", j + API_ALG.length + 1);
+        var q = msg.indexOf(API_END, 0);
+        if(i < j && j < k && k < q){  //is obfuscated
+            var alg = msg.substring(j + API_ALG.length, k);
+            var ret = msg.substring(k + 1, q);
+            if(ret.charAt(0) === '\n'){
+                ret = ret.substring(1, ret.length);
+            }
+            if(alg === "Masked-AES"){
+                var deobs = new MaskedAES();
+                return deobs.deobfuscateAlgorithm(ret);
+            }
+            return "null";
         }
-        return API_INIT + algorithm.obfuscateAlgorithm(text) + API_END;
+        return text;
     };
-       
-    this.obfuscateAll = function(){
-        obfuscateAll_TextArea();
-        obfuscateAll_Input();
-        obfuscateAll_Outlook();
+
+    this.deobfuscateAll = function(){      
+        deobfuscateAll_Input();
+        deobfuscateAll_TextArea();
+        deobfuscateAll_Outlook();
     };
     
-    function obfuscateAll_TextArea(){
+    var deobfuscateAll_TextArea = function(){
         var allTextArea = document.getElementsByTagName("textarea");
         var num = allTextArea.length;
-        var obf_msg;
+        var deobf_msg;
+        var sel;
         var i;
         for(i = 0 ; i < num ; i++){
-            obf_msg = obfuscate(allTextArea[i].value.toString()); 
-            allTextArea[i].value = obf_msg.toString();
+            sel = allTextArea[i].value.toString();
+            deobf_msg = deobfuscate(sel);  
+            allTextArea[i].value = deobf_msg;	
         }
-    };
+    };    
     
-    function obfuscateAll_Input(){
+    var deobfuscateAll_Input = function(){
         var allInput = document.getElementsByTagName("input");
         var num = allInput.length;
-        var obf_msg;
+        var deobf_msg;
+        var sel;
         var i;
         for(i = 0 ; i < num ; i++){
             if(allInput[i].type.toString() === 'text') {
-                obf_msg = obfuscate(allInput[i].value.toString()); 
-                allInput[i].value = obf_msg;
+                sel = allInput[i].value.toString();
+                deobf_msg = deobfuscate(sel);  
+                allInput[i].value = deobf_msg;
             }
         }
     };
     
-    function obfuscateAll_Outlook(){
+    var deobfuscateAll_Outlook = function(){
         var allIframe = document.getElementsByTagName("iframe");
         var num = allIframe.length;
-        var obf_msg;
+        var deobf_msg;
+        var sel;
         var i;
         for(i = 0 ; i < num ; i++){
             if(allIframe[i].title === 'Cuerpo del mensaje'){
                 var body = allIframe[i].contentDocument.getElementsByTagName("body");
-                obf_msg = obfuscate(body[0].innerText.toString()); 
-                body[0].innerText = obf_msg;
+                sel = body[0].innerText.toString();
+                deobf_msg = deobfuscate(sel);  
+                body[0].innerText = deobf_msg;
             }
         }
     };
-    
-    this.obfuscateSelected = function(){
-        if(!obfuscateSelected_TextArea() && !obfuscateSelected_Input() && !obfuscateSelected_Outlook()){
-            obfuscateSelected_Text();
-        } 
-    };
 
-    function obfuscateSelected_Text(){    
+    this.deobfuscateSelected = function(){     
+        if(!deobfuscateSelected_TextArea() && !deobfuscateSelected_Input() && !deobfuscateSelected_Outlook()){
+            deobfuscateSelected_Text();
+        }
+    };
+    
+    var deobfuscateSelected_Text = function() {    
         var sel, range; 
         var obf_msg;
         if (window.getSelection) {        
             sel = window.getSelection();   
-            obf_msg = obfuscate(sel.toString());
+            obf_msg = deobfuscate(sel.toString());
             if (sel.rangeCount) { 
                 range = sel.getRangeAt(0);  
                 range.deleteContents(); 
@@ -84,25 +95,23 @@ function Obfuscator(obs_algorithm){
             }    
         } else if (document.selection && document.selection.createRange) {        
             range = document.selection.createRange();    
-            obf_msg = obfuscate(range.text.toString());
+            obf_msg = deobfuscate(range.text.toString());
             range.text = obf_msg;
         }
     };
-    
-    var obfuscateSelected_TextArea = function(){
+        
+    var deobfuscateSelected_TextArea = function(){
         var allTextArea = document.getElementsByTagName("textarea");
         var num = allTextArea.length;
-        var obf_msg;
+        var deobf_msg;
         var sel;
         var i;
         for(i = 0 ; i < num ; i++){
             if(allTextArea[i].selectionStart !== allTextArea[i].selectionEnd){
-			 
                 sel = allTextArea[i].value.substring(allTextArea[i].selectionStart, allTextArea[i].selectionEnd);
-                obf_msg = obfuscate(sel);
-            
+                deobf_msg = deobfuscate(sel);  
                 allTextArea[i].value = allTextArea[i].value.substring(0, allTextArea[i].selectionStart) + 
-                                       obf_msg +
+                                       deobf_msg +
                                        allTextArea[i].value.substring(allTextArea[i].selectionEnd, allTextArea[i].value.toString().length);
                 return true;
             }
@@ -110,38 +119,41 @@ function Obfuscator(obs_algorithm){
         return false;
     };
 
-    var obfuscateSelected_Input =  function(){
+    var deobfuscateSelected_Input = function(){
         var allInput = document.getElementsByTagName("input");
         var num = allInput.length;
-        var obf_msg;
+        var deobf_msg;
         var sel;
         var i;
         for(i = 0 ; i < num ; i++){
-            if(allInput[i].type === "text" && allInput[i].selectionStart !== allInput[i].selectionEnd){
+            if(allInput[i].type.toString() === 'text' && allInput[i].selectionStart !== allInput[i].selectionEnd) {
                 sel = allInput[i].value.substring(allInput[i].selectionStart, allInput[i].selectionEnd);
-                obf_msg = obfuscate(sel);
+                deobf_msg = deobfuscate(sel);  
                 allInput[i].value = allInput[i].value.substring(0, allInput[i].selectionStart) + 
-                                    obf_msg +
+                                    deobf_msg +
                                     allInput[i].value.substring(allInput[i].selectionEnd, allInput[i].value.toString().length);
-                return true;
-            }		
-        }
-        return false;
-    };
-    
-    var obfuscateSelected_Outlook = function(){
-        var allIframe = document.getElementsByTagName("iframe");
-        var num = allIframe.length;
-        var obf_msg;
-        var i;
-        for(i = 0 ; i < num ; i++){
-            if(allIframe[i].title === 'Cuerpo del mensaje'){
-                var body = allIframe[i].contentDocument.getElementsByTagName("body");
-                obf_msg = obfuscate(body[0].innerText.toString()); 
-                body[0].innerText = obf_msg;
                 return true;
             }
         }
         return false;
     };
+
+    var deobfuscateSelected_Outlook = function(){
+        var allIframe = document.getElementsByTagName("iframe");
+        var num = allIframe.length;
+        var deobf_msg;
+        var sel;
+        var i;
+        for(i = 0 ; i < num ; i++){
+            if(allIframe[i].title === 'Cuerpo del mensaje'){
+                var body = allIframe[i].contentDocument.getElementsByTagName("body");
+                sel = body[0].innerText.toString();
+                deobf_msg = deobfuscate(sel);  
+                body[0].innerText = deobf_msg;
+                return true;
+            }
+        }
+        return false;
+    };    
+
 }

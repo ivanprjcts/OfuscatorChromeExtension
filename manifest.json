@@ -12,7 +12,7 @@
   
  "content_scripts": [{   
      "matches": ["<all_urls>","http://*/*","https://*/*"],
-     "js": ["sha1.js","string-ext.js","obfuscator.js","alg.js","MaskedAES.js"],
+     "js": ["sha1.js","string-ext.js","obfuscator.js","deobfuscator.js","alg.js","MaskedAES.js","aes.js","mode-cfb-min.js","pad-ansix923-min.js","math-ext.js"],
      "run_at": "document_start"
   }],
   "browser_action": {

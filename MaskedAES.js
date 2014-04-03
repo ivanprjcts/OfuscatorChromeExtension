@@ -1,23 +1,25 @@
 var KEY_LENGTH = 128;
 
-function MaskedAES(){
-    
-    function mask_key(key, mask){
-        var binary_mask = hexToBinary(key.toString());
-        for(var i = 0 ; i < mask ; i++){
-            binary_mask.replace(i,'*');
-        }
-        return (binary_mask);
-    }
-    
-    function mask_format(mask){
-        if(mask < 10){
-            return '0' + mask.toString();
-        }
-        return mask.toString();
-    }
+function MaskedAES(){   
+    this.name = "Masked-AES";
+}
 
-    this.obfuscateAlgorithm = function(msg, mask){
+function mask_key(key, mask){
+    var binary_mask = hexToBinary(key.toString());
+    for(var i = 0 ; i < mask ; i++){
+        binary_mask.replace(i,'*');
+    }
+    return (binary_mask);
+}
+    
+function mask_format(mask){
+    if(mask < 10){
+        return '0' + mask.toString();
+    }
+return mask.toString();
+}
+    
+MaskedAES.prototype.obfuscateAlgorithm = function(msg, mask){
         
         var key = CryptoJS.lib.WordArray.random(128/8);
         var iv  = CryptoJS.lib.WordArray.random(128/8);       
@@ -28,8 +30,8 @@ function MaskedAES(){
        
         return btoa(mask_key(key, mask) + mask_format(mask) + proof.toString() + enc_proof.ciphertext.toString() + iv.toString() + encrypted.ciphertext.toString());
     };
-    
-    this.deobfuscateAlgorithm = function(obs_msg_b64){
+
+MaskedAES.prototype.deobfuscateAlgorithm = function(obs_msg_b64){
         
         var obs_msg = atob(obs_msg_b64);
 
@@ -46,8 +48,7 @@ function MaskedAES(){
         var decrypted = CryptoJS.AES.decrypt({ ciphertext: cipher_text }, key, { iv: iv }, { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.AnsiX923 });
     
         return decrypted.toString(CryptoJS.enc.Utf8);
-    };
-}
+};
 
 function brute_force(key_mask, mask, proof, searched_enc_proof, iv){
     
