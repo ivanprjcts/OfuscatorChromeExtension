@@ -3,11 +3,11 @@
   "name": "Obfuscator Plugin",
   "description": "Obfuscate your messages",
   "icons": {
-      "16":"obfuscator_icon16.jpg",
-      "48":"obfuscator_icon48.jpg",
-      "128":"obfuscator_icon128.jpg"
+      "16":"obfuscator_icon16.png",
+      "48":"obfuscator_icon48.png",
+      "128":"obfuscator_icon128.png"
   },
-  "version": "0.0",
+  "version": "0.2",
   "permissions": ["alarms", "tabs", "bookmarks", "*://*/*"],
   
  "content_scripts": [{   
@@ -16,7 +16,7 @@
      "run_at": "document_start"
   }],
   "browser_action": {
-    "default_icon" : "icon.png",
+    "default_icon" : "icon3.png",
     "default_title": "Obfuscator",
     "default_popup": "popup.html"
   }
