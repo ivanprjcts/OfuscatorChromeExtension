@@ -1,7 +1,7 @@
 function click(e) {
       
     if(e.target.id === 'ofuscarButton'){
-        chrome.tabs.executeScript(null, {code:"var plugin = new Obfuscator(new MaskedAES());"});
+        chrome.tabs.executeScript(null, {code:"var plugin = new Obfuscator(new MaskedAES128());"});
 
         var scrpt = "plugin.setMask(" + slider1.value + ");";     
         chrome.tabs.executeScript(null, {code:scrpt});

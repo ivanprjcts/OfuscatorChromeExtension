@@ -5,7 +5,7 @@ var API_ALG = "Algorithm: ";
 
 function Deobfuscator(){
         
-    function deobfuscate(text){
+    var deobfuscate = function(text){
         var msg = new String(text);
         var i = msg.indexOf(API_INIT, 0);
         var j = msg.indexOf(API_ALG, 0);
@@ -17,8 +17,8 @@ function Deobfuscator(){
             if(ret.charAt(0) === '\n'){
                 ret = ret.substring(1, ret.length);
             }
-            if(alg === "Masked-AES"){
-                var deobs = new MaskedAES();
+            if(alg === "Masked-AES128"){
+                var deobs = new MaskedAES128();
                 return deobs.deobfuscateAlgorithm(ret);
             }
             return "null";

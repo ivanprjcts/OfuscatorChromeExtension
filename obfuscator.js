@@ -14,8 +14,8 @@ function Obfuscator(obs_algorithm){
     };
     
     
-    function obfuscate(text){
-        if(algorithm.name === "Masked-AES"){
+    var obfuscate = function(text){
+        if(algorithm.name === "Masked-AES128"){
             return API_INIT + API_ALG + algorithm.name + " " + algorithm.obfuscateAlgorithm(text, mask) + API_END;
         }
         return API_INIT + algorithm.obfuscateAlgorithm(text) + API_END;

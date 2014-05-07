@@ -7,12 +7,12 @@
       "48":"obfuscator_icon48.png",
       "128":"obfuscator_icon128.png"
   },
-  "version": "0.2",
+  "version": "0.3",
   "permissions": ["alarms", "tabs", "bookmarks", "*://*/*"],
   
  "content_scripts": [{   
      "matches": ["<all_urls>","http://*/*","https://*/*"],
-     "js": ["sha1.js","string-ext.js","obfuscator.js","deobfuscator.js","alg.js","MaskedAES.js","aes.js","mode-cfb-min.js","pad-ansix923-min.js","math-ext.js"],
+     "js": ["sha1.js","string-ext.js","obfuscator.js","deobfuscator.js","alg.js","MaskedAES128.js","aes.js","mode-cfb-min.js","pad-ansix923-min.js","math-ext.js","enc-base64-min.js"],
      "run_at": "document_start"
   }],
   "browser_action": {
