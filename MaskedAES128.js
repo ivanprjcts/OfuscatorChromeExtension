@@ -41,33 +41,60 @@ MaskedAES128.prototype.obfuscateAlgorithm = function(msg, mask){
         var ml = mask.toString(16);
         var masklength = CryptoJS.enc.Hex.parse(ml.lpad('0',8));
        
-        var km_b64 = CryptoJS.enc.Base64.stringify(km);
-        var masklength_b64 = CryptoJS.enc.Base64.stringify(masklength);
-        var proof_b64 = CryptoJS.enc.Base64.stringify(proof);
-        var enc_proof_b64 = CryptoJS.enc.Base64.stringify(enc_proof.ciphertext);
-        var iv_b64 = CryptoJS.enc.Base64.stringify(iv);
-        var encrypted_b64 = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+        var buffer = CryptoJS.lib.WordArray.create();
+        buffer.concat(km);
+        buffer.concat(masklength);
+        buffer.concat(proof);
+        buffer.concat(enc_proof.ciphertext);
+        buffer.concat(iv);
+        buffer.concat(encrypted.ciphertext);
         
-        return km_b64 + masklength_b64 + proof_b64 + enc_proof_b64 + iv_b64 + encrypted_b64;
+        return CryptoJS.enc.Base64.stringify(buffer);
     };
 
 MaskedAES128.prototype.deobfuscateAlgorithm = function(obs_msg_b64){
 
-        var key_mask = CryptoJS.enc.Base64.parse(obs_msg_b64.substring(0,24));
-        var mask_words = CryptoJS.enc.Base64.parse(obs_msg_b64.substring(24,32));
-        var mask = mask_words.words[0];
-        var proof = CryptoJS.enc.Base64.parse(obs_msg_b64.substring(32,44));
-        var enc_proof = CryptoJS.enc.Base64.parse(obs_msg_b64.substring(44,68));
-        var iv  = CryptoJS.enc.Base64.parse(obs_msg_b64.substring(68,92));   
-        var cipher_text = CryptoJS.enc.Base64.parse(obs_msg_b64.substring(92));   
+    var buffer = CryptoJS.enc.Base64.parse(obs_msg_b64);
+  
+    var key_mask = CryptoJS.lib.WordArray.create(buffer.words.slice(0,4));
+    var mask_words = CryptoJS.lib.WordArray.create(buffer.words.slice(4,5));
+    var mask = mask_words.words[0];
+    var proof = CryptoJS.lib.WordArray.create(buffer.words.slice(5,7));
+    var enc_proof = CryptoJS.lib.WordArray.create(buffer.words.slice(7,11));
+    var iv  = CryptoJS.lib.WordArray.create(buffer.words.slice(11,15)); 
+    var cipher_text = CryptoJS.lib.WordArray.create(buffer.words.slice(15));  
+      
+    var key = brute_force(key_mask, mask, proof, enc_proof, iv);
         
-        var key = brute_force(key_mask, mask, proof, enc_proof, iv);
-        
-        var decrypted = CryptoJS.AES.decrypt({ ciphertext: cipher_text }, key, { iv: iv }, { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.AnsiX923 });
+    var decrypted = CryptoJS.AES.decrypt({ ciphertext: cipher_text }, key, { iv: iv }, { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.AnsiX923 });
     
-        return decrypted.toString(CryptoJS.enc.Utf8);
+    return decrypted.toString(CryptoJS.enc.Utf8);
 };
 
+
+function brute_force(key_mask, mask, proof, searched_enc_proof, iv){
+    
+    var enc_proof;
+    var mask_var;
+    var key = key_mask.clone();
+    var shift = 32 - mask;
+
+    var end = Math.pow(2, mask);
+    for(var i = 0 ; i < end ; i++){
+        
+        mask_var = i << shift;
+        key.words[0] = key_mask.words[0] | mask_var;
+       
+        enc_proof = CryptoJS.AES.encrypt(proof, key, { iv: iv }, { mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.AnsiX923 });
+
+        if(enc_proof.ciphertext.toString() === searched_enc_proof.toString()){
+            return key;
+        }
+    }
+    return null; 
+}
+
+/**
 function brute_force(key_mask, mask, proof, searched_enc_proof, iv){
     
     var key;
@@ -94,3 +121,4 @@ function brute_force(key_mask, mask, proof, searched_enc_proof, iv){
     }
     return null; 
 }
+*/
