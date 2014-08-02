@@ -19,7 +19,7 @@ function Deobfuscator(){
             }
             if(alg === "Masked-AES128"){
                 var deobs = new MaskedAES128();
-                return deobs.deobfuscateAlgorithm(ret);
+                return msg.substring(0, i) + deobs.deobfuscateAlgorithm(ret) + msg.substring(q + API_END.length);
             }
             return "null";
         }
@@ -30,6 +30,7 @@ function Deobfuscator(){
         deobfuscateAll_Input();
         deobfuscateAll_TextArea();
         deobfuscateAll_Outlook();
+        deobfuscateAll_HTML();
     };
     
     var deobfuscateAll_TextArea = function(){
@@ -74,6 +75,10 @@ function Deobfuscator(){
                 body[0].innerText = deobf_msg;
             }
         }
+    };
+
+    var deobfuscateAll_HTML = function() {   
+        document.body.innerHTML = deobfuscate(document.body.innerHTML);
     };
 
     this.deobfuscateSelected = function(){     

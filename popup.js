@@ -1,16 +1,11 @@
 function click(e) {
       
-    if(e.target.id === 'ofuscarButton'){
-        chrome.tabs.executeScript(null, {code:"var plugin = new Obfuscator(new MaskedAES128());"});
-
-        var scrpt = "plugin.setMask(" + slider1.value + ");";     
-        chrome.tabs.executeScript(null, {code:scrpt});
-        
+    if(e.target.id === 'ofuscarButton'){     
         if(obf_sel.checked){          
-            chrome.tabs.executeScript(null, {code:"plugin.obfuscateSelected();"});
+            obfuscatePage_only_selection();
         };
         if(obf_all.checked){
-            chrome.tabs.executeScript(null,{code:"plugin.obfuscateAll();"});
+            obfuscateAllPage();
         };
     };
 
@@ -35,6 +30,7 @@ function change(e){
 
 
 document.addEventListener('DOMContentLoaded', function () {
+  //alert("Pagina cargada");
   var buttons = document.getElementsByTagName('button');
   var slider1 = document.getElementById('slider1');
   
@@ -45,5 +41,21 @@ document.addEventListener('DOMContentLoaded', function () {
   slider1.addEventListener('change', change);
   
 });
+
+function obfuscatePage_only_selection(){
+    chrome.tabs.executeScript(null, {code:"var plugin = new Obfuscator(new MaskedAES128());"});
+
+    var scrpt = "plugin.setMask(" + slider1.value + ");";     
+    chrome.tabs.executeScript(null, {code:scrpt});
+    chrome.tabs.executeScript(null, {code:"plugin.obfuscateSelected();"});
+}
+
+function obfuscateAllPage(){
+    chrome.tabs.executeScript(null, {code:"var plugin = new Obfuscator(new MaskedAES128());"});
+
+    var scrpt = "plugin.setMask(" + slider1.value + ");";     
+    chrome.tabs.executeScript(null, {code:scrpt});
+    chrome.tabs.executeScript(null,{code:"plugin.obfuscateAll();"});
+}
 
 
