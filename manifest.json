@@ -3,26 +3,26 @@
   "name": "Obfuscator tool",
   "description": "This tool allows you to obfuscate your communications",
   "icons": {
-      "16":"img/obfuscator_icon16.png",
-      "48":"img/obfuscator_icon48.png",
-      "128":"img/obfuscator_icon128.png"
+      "16":"img/icon16.png",
+      "48":"img/icon48.png",
+      "128":"img/icon128.png"
   },
   "version": "0.5",
   "permissions": ["alarms", "tabs", "bookmarks", "*://*/*"], 
   "content_scripts": [{   
      "matches": ["<all_urls>","http://*/*","https://*/*"],
-     "js": ["js/sha1.js","js/string-ext.js","js/mode-cfb-min.js","js/pad-ansix923-min.js",
-     		"js/math-ext.js","js/enc-base64-min.js", "js/obfuscator.js","js/deobfuscator.js",
-     		"js/masked-aes128.js","js/aes.js", "js/authomatic.js"], 
+     "js": ["js/Crypto-JS/sha1.js", "js/Crypto-JS/mode-cfb-min.js", "js/Crypto-JS/pad-ansix923-min.js",
+     		"js/Crypto-JS/enc-base64-min.js", "js/Crypto-JS/aes.js", "js/string-ext.js", "js/math-ext.js", 
+     		"js/masked-aes128.js", "js/obfuscator.js","js/deobfuscator.js", "js/authomatic.js"], 
      "run_at": "document_start"
   }],
   "browser_action": {
-    "default_icon" : "icon.png",
+    "default_icon" : "img/icon.png",
     "default_title": "Obfuscator tool",
     "default_popup": "popup.html"
   },
   "background": {
     "persistent": true,
-    "scripts": ["background.js"]
+    "scripts": ["js/background.js"]
   }
 }
